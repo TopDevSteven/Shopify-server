@@ -9,7 +9,7 @@ import hmac as HM
 from urllib.parse import urlencode
 
 load_dotenv()
-redirect_uri = urlencode({"redirect_uri": os.getenv("Redirect_URL") + "generate/"})[13:]
+redirect_uri = urlencode({"redirect_uri": os.getenv("REDIRECT_URL") + "generate/"})[13:]
 api_key = os.getenv("API_KEY")
 shared_secret = os.getenv("SECRET_KEY")
 
