@@ -62,7 +62,7 @@ async def generate(request: Request):
         async with httpx.AsyncClient() as client:
             response = await client.post(access_token_url, data=query)
         # print(response)
-        result = await response.json()
+        result = response.json()
         print(result)
         access_token = result["access_token"]
         return access_token
