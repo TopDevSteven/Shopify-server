@@ -7,11 +7,14 @@ import hashlib
 import httpx
 import hmac as HM
 from urllib.parse import urlencode
+
 load_dotenv()
-redirect_uri = os.getenv("Redirect_URL")
+redirect_uri = urlencode({"redirect_uri": os.getenv("Redirect_URL") + "generate/"})[13:]
 api_key = os.getenv("API_KEY")
 shared_secret = os.getenv("SECRET_KEY")
+
 app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,19 +22,22 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 @app.get("/")
 async def read_root():
     return "Hello"
+
 @app.get("/hello/")
 def show():
     return "Hello world"
+
 @app.get("/install/")
 async def install(shop: str):
-    print(shop)
-    print(urlencode(shop))
+    print(redirect_uri)
     scopes = "read_orders,read_products"
     install_url = f"https://{shop}.myshopify.com/admin/oauth/authorize?client_id={api_key}&scope={scopes}&redirect_uri={redirect_uri}"
     return RedirectResponse(url=install_url)
+
 @app.get("/generate/")
 async def generate(request: Request):
     query_params = request.query_params
@@ -45,6 +51,7 @@ async def generate(request: Request):
     print(sorted_params)
     computed_hmac = HM.new(shared_secret.encode(), urlencode(sorted_params).encode(), hashlib.sha256).hexdigest()
     print(computed_hmac)
+    
     if HM.compare_digest(hmac, computed_hmac):
         query = {
             "client_id": api_key,
@@ -61,3 +68,4 @@ async def generate(request: Request):
         return access_token
     else:
         raise HTTPException(status_code=401, detail="HMAC verification failed")
+
