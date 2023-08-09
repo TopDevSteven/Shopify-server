@@ -25,11 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def read_root():
-    uri = "https://translate.google.com/"
-    return RedirectResponse(url=uri)
-
 @app.get("/hello/")
 def show():
     return "Hello world"
