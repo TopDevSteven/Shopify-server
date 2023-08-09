@@ -36,9 +36,8 @@ def show():
 
 @app.get("/install/")
 async def install(shop: str):
-    
     scopes = "read_orders,read_products"
-    install_url = f"https://{shop}.myshopify.com/admin/oauth/authorize?client_id={api_key}&scope={scopes}&{redirect_uri}"
+    install_url = f"https://{shop}.myshopify.com/admin/oauth/authorize?client_id={api_key}&scope={scopes}&redirect_uri={redirect_uri}"
     return RedirectResponse(url=install_url)
 
 
